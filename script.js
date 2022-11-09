@@ -122,8 +122,6 @@ c('.pizzaInfo--addButton').addEventListener('click', () => {
             qt: modalQt
         })
     }
-
-
-
+    
     closeModal();
 });
