@@ -46,7 +46,7 @@ pizzaJson.map((item, index)=>{
         
         c('.pizzaInfo--qt').innerHTML = modalQt;
 
-        // parte do script para o modal em si
+        // parte do script para o modal em si abrir
         c('.pizzaWindowArea').style.opacity = 0;
         c('.pizzaWindowArea').style.display = 'flex';
         setTimeout(()=>{
@@ -101,17 +101,29 @@ cs('.pizzaInfo--size').forEach((item)=>{
 
 c('.pizzaInfo--addButton').addEventListener('click', () => {
     //     Qual a pizza?
-    let pizza = modalKey
+        //modalKey
     //     Qual o tamanho?
     let tamanho = parseInt(c('.pizzaInfo--size.selected').getAttribute('data-key'))
     //     Qual a quantidade?
-    let qtd = modalQt;
+        //modalQt;
+    //     Criando identificador
+    let identifier = pizzaJson[modalKey].id+'@'+tamanho;
 
-    cart.push({
-        id: pizzaJson[modalKey].id,
-        tamanho,
-        qt: modalQt
-    })
+    let position = cart.findIndex((item) => item.identifier == identifier);
+    
+    console.log(cart[position])
+    if (position > -1){
+        cart[position].qt += modalQt
+    }else{
+        cart.push({
+            identifier,
+            id: pizzaJson[modalKey].id,
+            tamanho,
+            qt: modalQt
+        })
+    }
+
+
 
     closeModal();
 });
