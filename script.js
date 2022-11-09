@@ -4,9 +4,13 @@
 // preventDefault
 // closest('.classeCitada') => ache o ítem mais próximo que tem a classe que eu citei
 
+let cart = []
+let modalQt = 1;
+let modalKey = '';
+
 const c = (el) => document.querySelector(el);
 const cs = (el) => document.querySelectorAll(el);
-let modalQt = 1;
+
 
 // listagem das pizzas
 
@@ -23,9 +27,10 @@ pizzaJson.map((item, index)=>{
     pizzaItem.querySelector('a').addEventListener('click', (e) => {
         e.preventDefault(); // cancela a ação natural do link/botão
         modalQt = 1;
-
-        let key = e.target.closest('.pizza-item').getAttribute('data-key');
         
+        let key = e.target.closest('.pizza-item').getAttribute('data-key');        
+        modalKey = key
+
         c('.pizzaBig img').src = pizzaJson[key].img;
         c('.pizzaInfo--actualPrice').innerHTML = `R$ ${pizzaJson[key].price.toFixed(2)}`;     
         c('.pizzaInfo h1').innerHTML = pizzaJson[key].name;
@@ -53,6 +58,8 @@ pizzaJson.map((item, index)=>{
 
 }); 
 
+
+
 // eventos do modal
 
 function closeModal () {
@@ -62,10 +69,12 @@ function closeModal () {
     }, 500)
 }
 
+// fechar o modal
 cs('.pizzaInfo--cancelButton, .pizzaInfo--cancelMobileButton').forEach((item)=>{
     item.addEventListener('click', closeModal)
 });
 
+// diminui quantidade de pizza
 c('.pizzaInfo--qtmenos').addEventListener('click', () => {
     if (modalQt > 1){
         modalQt--;
@@ -74,7 +83,35 @@ c('.pizzaInfo--qtmenos').addEventListener('click', () => {
 
 });
 
+// add quantidade de pizza
 c('.pizzaInfo--qtmais').addEventListener('click', () => {
     modalQt++;
     c('.pizzaInfo--qt').innerHTML = modalQt;
+});
+
+// muda tamanho da pizza selecionado
+cs('.pizzaInfo--size').forEach((item)=>{
+    item.addEventListener('click', ()=>{
+        c('.pizzaInfo--size.selected').classList.remove('selected')
+        item.classList.add('selected')
+    });
+});
+
+// add ao carrinho
+
+c('.pizzaInfo--addButton').addEventListener('click', () => {
+    //     Qual a pizza?
+    let pizza = modalKey
+    //     Qual o tamanho?
+    let tamanho = parseInt(c('.pizzaInfo--size.selected').getAttribute('data-key'))
+    //     Qual a quantidade?
+    let qtd = modalQt;
+
+    cart.push({
+        id: pizzaJson[modalKey].id,
+        tamanho,
+        qt: modalQt
+    })
+
+    closeModal();
 });
