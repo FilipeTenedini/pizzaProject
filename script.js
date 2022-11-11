@@ -110,7 +110,7 @@ c('.pizzaInfo--addButton').addEventListener('click', () => {
     let identifier = pizzaJson[modalKey].id+'@'+tamanho;
 
     let position = cart.findIndex((item) => item.identifier == identifier);
-    
+
     console.log(cart[position])
     if (position > -1){
         cart[position].qt += modalQt
@@ -122,6 +122,44 @@ c('.pizzaInfo--addButton').addEventListener('click', () => {
             qt: modalQt
         })
     }
-    
+    updateCart();
     closeModal();
 });
+
+function updateCart() {
+    if (cart.length > 0) {
+        c('aside').classList.add('show');
+        c('.cart').innerHTML = '';
+        for (let i in cart) {
+            let pizzaItem = pizzaJson.find((item) => item.id == cart[i].id);
+            let cartItem = c('.models .cart--item').cloneNode(true);
+
+
+            let pizzaSizeName = '';            
+            switch(cart[i].tamanho){
+                case 0:
+                    pizzaSizeName = 'P'
+                    break
+                case 1:
+                    pizzaSizeName = 'M'
+                    break
+                case 2:
+                default:
+                    pizzaSizeName = 'G'
+            }
+            let pizzaName = `${pizzaItem.name} ( ${pizzaSizeName} )`
+            cartItem.querySelector('img').src = pizzaItem.img;
+            cartItem.querySelector('.cart--item-nome').innerHTML = pizzaName;
+            cartItem.querySelector('.cart--item--qt').innerHTML = cart[i].qt;
+
+
+            c('.cart').append(cartItem);
+
+        };
+        
+
+
+    } else {
+        c('aside').classList.remove('show');
+    }
+};
