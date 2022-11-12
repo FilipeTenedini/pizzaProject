@@ -111,7 +111,7 @@ c('.pizzaInfo--addButton').addEventListener('click', () => {
 
     let position = cart.findIndex((item) => item.identifier == identifier);
 
-    console.log(cart[position])
+    
     if (position > -1){
         cart[position].qt += modalQt
     }else{
@@ -126,14 +126,35 @@ c('.pizzaInfo--addButton').addEventListener('click', () => {
     closeModal();
 });
 
+
+c('.menu-openner').addEventListener('click', () => {
+    if (cart.length > 0) {
+        c('aside').style.left = '0px'
+    }
+});
+
+c('.menu-closer').addEventListener('click', () => {
+        c('aside').style.left = '100vw'
+});
+
 function updateCart() {
+
+    c('.menu-openner span').innerHTML = cart.length;
+
     if (cart.length > 0) {
         c('aside').classList.add('show');
         c('.cart').innerHTML = '';
+
+        let subtotal = 0;
+        let desconto = 0;
+        let total = 0;
+
+
         for (let i in cart) {
             let pizzaItem = pizzaJson.find((item) => item.id == cart[i].id);
             let cartItem = c('.models .cart--item').cloneNode(true);
 
+            subtotal += pizzaItem.price * cart[i].qt;
 
             let pizzaSizeName = '';            
             switch(cart[i].tamanho){
@@ -151,15 +172,30 @@ function updateCart() {
             cartItem.querySelector('img').src = pizzaItem.img;
             cartItem.querySelector('.cart--item-nome').innerHTML = pizzaName;
             cartItem.querySelector('.cart--item--qt').innerHTML = cart[i].qt;
-
-
+            cartItem.querySelector('.cart--item-qtmenos').addEventListener('click', () => {
+                if (cart[i].qt > 1) {
+                    cart[i].qt--;
+                } else {
+                    cart.splice(cart[i], 1)
+                }
+                updateCart();
+            });
+            cartItem.querySelector('.cart--item-qtmais').addEventListener('click', () => {
+                cart[i].qt++;
+                updateCart();
+            });
             c('.cart').append(cartItem);
 
         };
         
-
-
+    desconto = subtotal * 0.1;
+    total = subtotal - desconto;
+    
+    c('.subtotal span:last-child').innerHTML = subtotal.toFixed(2);
+    c('.desconto span:last-child').innerHTML = desconto.toFixed(2);
+    c('.total span:last-child').innerHTML = total.toFixed(2);
     } else {
         c('aside').classList.remove('show');
+        c('aside').style.left = '100vw';
     }
 };
